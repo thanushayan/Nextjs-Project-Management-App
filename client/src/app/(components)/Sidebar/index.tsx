@@ -1,7 +1,10 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from 'react'
-import { LockIcon } from "lucide-react";
+import { Link, LockIcon, LucideIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/app/redux";
+import Home from "@/app/page";
  
 
 const Sidebar = ( ) => {
@@ -12,7 +15,7 @@ const Sidebar = ( ) => {
     transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white 
     w-64`;
 
-  return   <div className={sidebarClassNames}>
+  return  ( <div className={sidebarClassNames}>
     <div className="flex h-[100%] w-full flex-col justify-start">
       {/* top logo */}
       <div className="z-50 flex min-h-[56px] w-64 items-center justify-between bg-white px-6 pt-3 dark:bg-black">
@@ -33,12 +36,57 @@ const Sidebar = ( ) => {
           </div>
         </div>
       </div>
-      {/* navbar */}
+      {/* navbar links */}
+      <nav className="z-10 w-full">
+      <SidebarLink icon={Home} label="Home" href="/" />
+      </nav>
+
+
       
     </div>
   </div>
+  //   ithula oru  error irukku  
+  ); 
    
  
+}
+interface SidebarLinkPros {
+  href : string;
+  icon: LucideIcon;
+  label: string;
+  isCollapsed: boolean;
+}
+const SidebarLink = ({
+  href,
+  icon: Icon,
+  label,
+  // isCollapsed
+}: SidebarLinkPros) => {
+  const pathname =  usePathname();
+  const isActive = pathname === href ||  ( pathname === "/" && href === "/dashboard");
+  const screenWidth = window.innerWidth;
+
+  const dispatch = useAppDispatch();
+  const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed,
+);
+ 
+return (
+  <Link href= {href} className="">
+    <div className={`ewlative flex cursor-pointer items-center gap-3 transition-colors
+    hover:bg-gray-100 dark:bg-black dark:hover:bg-gray-700 ${
+    isActive ? "bg-gray-100 text-white dark:bg-gray-600" : ""
+    }`} 
+    >
+      {isActive && (
+        <div className="absolute left-0 h-[100%] w-[5px]  bg-blue-200"/>
+      )}
+      <Icon className="h-6 w-6 text-gray-800 dark:text-gray-100"/>
+      <span className={`font-medium text-gray-800 dark:text-gray-100`}>
+        {label}
+      </span>
+    </div>
+  </Link>
+)
 }
 
 export default Sidebar;
