@@ -1,19 +1,26 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from 'react'
-import { Link, LockIcon, LucideIcon } from "lucide-react";
+import {  LockIcon, LucideIcon,Home,Briefcase,Search,Settings,User,Users,X, ChevronUp, ChevronDown} from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import Home from "@/app/page";
+import { setIsSidebarCollapsed } from "@/state";
+//import Home from "@/app/page";
  
 
 const Sidebar = ( ) => {
-    const [showProject,setShowProject] = useState(true);
+    const [showProjects,setShowProjects] = useState(true);
     const [showPriority,setShowPriority] = useState(true);
 
-    const sidebarClassNames = `fixed flex  flex-col h-[100%] justify-between shadow-xl
-    transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white 
-    w-64`;
+    const dispatch = useAppDispatch();
+    const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed,
+  );
+
+    const sidebarClassNames = `fixed flex flex-col h-[100%] justify-between shadow-xl
+    transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white
+    ${isSidebarCollapsed ? "w-0 hidden" : "w-64"}
+  `;
 
   return  ( <div className={sidebarClassNames}>
     <div className="flex h-[100%] w-full flex-col justify-start">
@@ -22,6 +29,15 @@ const Sidebar = ( ) => {
         <div className="text-xl font-bold text-gray-800 dark:text-white">
           Thanu
         </div>
+        {isSidebarCollapsed ? null : (
+          <button className="py-3"
+           onClick={() => {
+            dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
+          }}
+          >
+            <X className="h-6 w-6 text-gray-800 hover:text-gray-500 dark:text-white"/>
+          </button>
+        )}
       </div>
       {/* team */}
       <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4 dark:border-gray-700">
@@ -39,7 +55,21 @@ const Sidebar = ( ) => {
       {/* navbar links */}
       <nav className="z-10 w-full">
       <SidebarLink icon={Home} label="Home" href="/" />
+          <SidebarLink icon={Briefcase} label="Timeline" href="/timeline" />
+          <SidebarLink icon={Search} label="Search" href="/search" />
+          <SidebarLink icon={Settings} label="Settings" href="/settings" />
+          <SidebarLink icon={User} label="Users" href="/users" />
+          <SidebarLink icon={Users} label="Teams" href="/teams" />
       </nav>
+      <button onClick={() => setShowProjects((prev) => !prev)}
+      className="flex w-full items-center justify-between px-8 py-3 text-gray-500">
+        <span className="">Projects</span>
+        {showProjects ? (
+          <ChevronUp className="h-5 w-5" />
+        ) : <ChevronDown className="h-5 w-5"/>}
+      </button>
+
+      {/* project list  */}
 
 
       
@@ -54,28 +84,25 @@ interface SidebarLinkPros {
   href : string;
   icon: LucideIcon;
   label: string;
-  isCollapsed: boolean;
+ // isCollapsed: boolean;
 }
 const SidebarLink = ({
   href,
   icon: Icon,
   label,
-  // isCollapsed
+ 
 }: SidebarLinkPros) => {
   const pathname =  usePathname();
   const isActive = pathname === href ||  ( pathname === "/" && href === "/dashboard");
-  const screenWidth = window.innerWidth;
-
-  const dispatch = useAppDispatch();
-  const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed,
-);
+  
  
 return (
   <Link href= {href} className="">
-    <div className={`ewlative flex cursor-pointer items-center gap-3 transition-colors
+    <div
+     className={`ewlative flex cursor-pointer items-center gap-3 transition-colors
     hover:bg-gray-100 dark:bg-black dark:hover:bg-gray-700 ${
     isActive ? "bg-gray-100 text-white dark:bg-gray-600" : ""
-    }`} 
+    } justify-start px-8 py-3 `} 
     >
       {isActive && (
         <div className="absolute left-0 h-[100%] w-[5px]  bg-blue-200"/>
