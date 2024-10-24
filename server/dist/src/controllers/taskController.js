@@ -9,38 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createProject = exports.getProjects = void 0;
+exports.getTasks = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { projectId } = req.query;
     try {
-        const projects = yield prisma.project.findMany();
-        res.json(projects);
-    }
-    catch (error) {
-        res
-            .status(500)
-            .json({ message: `Error retrieving projects: ${error.message}` });
-    }
-});
-exports.getProjects = getProjects;
-const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description, startDate, endDate } = req.body;
-    try {
-        const newProject = yield prisma.project.create({
-            data: {
-                name,
-                description,
-                startDate,
-                endDate,
+        const tasks = yield prisma.task.findMany({
+            where: {
+                projectId: Number(projectId),
             },
+            include: {
+                author: true,
+                assignee: true,
+                comments: true,
+                attachments: true,
+            }
         });
-        res.json(newProject);
+        res.json(tasks);
     }
     catch (error) {
         res
             .status(500)
-            .json({ message: `Error creating projects : ${error.message}` });
+            .json({ message: `Error retrieving tasks: ${error.message}` });
     }
 });
-exports.createProject = createProject;
+exports.getTasks = getTasks;
