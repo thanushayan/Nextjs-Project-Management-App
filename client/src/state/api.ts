@@ -23,6 +23,23 @@ export enum Status {
     Completed = "Completed"
 
 }
+export interface User {
+    userId?: number;
+    username: string;
+    email: string;
+    profilePictureUrl?: string;
+    cognitoId?: string;
+    teamId?: number;
+  }
+
+  
+export interface Attachment {
+    id: number;
+    fileURL: string;
+    fileName: string;
+    taskId: number;
+    uploadedById: number;
+  }
 export interface Task {
     id:number;
     title:string;
@@ -36,13 +53,23 @@ export interface Task {
     projectId?:number;
     authorUserId?:number;
     assignedUserId?:number;
+
+    auther?: User;
+    assignee?:User;
+    comments?:Comment[];
+    attachments?:Attachment[];
 }
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({baseUrl:process.env.NEXT_PUBLIC_API_BASE_URL}),
     reducerPath: "api",
-    tagTypes:[],
-    endpoints:(build) => ({}),
+    tagTypes:["Projects"],
+    endpoints:(build) => ({
+        getProjects:build.query<Project[],void>({
+            query: () => "projects",
+            providesTags : ["Projects"]
+        })
+    }),
 })
 
 export const {} = api ;
