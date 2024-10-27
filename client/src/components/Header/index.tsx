@@ -6,9 +6,13 @@ type Props = {
   isSmallText?: boolean;
 };
 
-const Header = ({ name, buttonComponent, isSmallText = false }: Props) => {
+const Header = ({ 
+  name,
+  buttonComponent,
+  isSmallText = false }: Props) => {
   return (
-    <div className="mb-5 flex w-full items-center justify-between">
+   <div className="mb-5 flex w-full items-center justify-between">
+    
       <h1
         className={`${isSmallText ? "text-lg" : "text-2xl"} font-semibold dark:text-white`}
       >
@@ -17,6 +21,7 @@ const Header = ({ name, buttonComponent, isSmallText = false }: Props) => {
       {buttonComponent}
     </div>
   );
+  
 };
 
 export default Header;
