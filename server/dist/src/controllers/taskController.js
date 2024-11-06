@@ -12,29 +12,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserTasks = exports.updateTaskStatus = exports.createTask = exports.getTasks = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
+// Fetch tasks based on project ID
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { projectId } = req.query;
+    // Validate projectId
+    const projectIdInt = parseInt(projectId, 10);
+    if (!projectId || isNaN(projectIdInt)) {
+        res.status(400).json({ message: "Invalid or missing projectId provided" });
+        return;
+    }
     try {
         const tasks = yield prisma.task.findMany({
-            where: {
-                projectId: Number(projectId),
-            },
+            where: { projectId: projectIdInt },
             include: {
                 author: true,
                 assignee: true,
                 comments: true,
                 attachments: true,
-            }
+            },
         });
         res.json(tasks);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: `Error retrieving tasks: ${error.message}` });
+        console.error("Error retrieving tasks:", error);
+        res.status(500).json({ message: `Error retrieving tasks: ${error.message}` });
     }
 });
 exports.getTasks = getTasks;
+// Create a new task
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, } = req.body;
     try {
@@ -56,39 +61,47 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(201).json(newTask);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: `Error creating a task: ${error.message}` });
+        console.error("Error creating task:", error);
+        res.status(500).json({ message: `Error creating task: ${error.message}` });
     }
 });
 exports.createTask = createTask;
+// Update task status
 const updateTaskStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { taskId } = req.params;
     const { status } = req.body;
+    const taskIdInt = parseInt(taskId, 10);
+    if (isNaN(taskIdInt)) {
+        res.status(400).json({ message: "Invalid taskId provided" });
+        return;
+    }
     try {
         const updatedTask = yield prisma.task.update({
-            where: {
-                id: Number(taskId),
-            },
-            data: {
-                status: status,
-            },
+            where: { id: taskIdInt },
+            data: { status },
         });
         res.json(updatedTask);
     }
     catch (error) {
+        console.error("Error updating task:", error);
         res.status(500).json({ message: `Error updating task: ${error.message}` });
     }
 });
 exports.updateTaskStatus = updateTaskStatus;
+// Fetch tasks for a specific user
 const getUserTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
+    const userIdInt = parseInt(userId, 10);
+    if (isNaN(userIdInt)) {
+        res.status(400).json({ message: "Invalid userId provided" });
+        return;
+    }
     try {
         const tasks = yield prisma.task.findMany({
             where: {
                 OR: [
-                    { authorUserId: Number(userId) },
-                    { assignedUserId: Number(userId) },
+                    { authorUserId: userIdInt },
+                    { assignedUserId: userIdInt },
                 ],
             },
             include: {
@@ -99,9 +112,13 @@ const getUserTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.json(tasks);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: `Error retrieving user's tasks: ${error.message}` });
+        console.error("Error retrieving user's tasks:", error);
+        res.status(500).json({ message: `Error retrieving user's tasks: ${error.message}` });
     }
 });
 exports.getUserTasks = getUserTasks;
+// Properly close Prisma client connection when process exits
+process.on("SIGINT", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$disconnect();
+    process.exit();
+}));
