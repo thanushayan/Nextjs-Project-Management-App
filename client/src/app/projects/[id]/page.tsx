@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import ProjectHeader from "@/app/projects/ProjectHeader"; // Double-check this import path
 import Board from "../BoardView/index"
+import List from "../ListView/index"
 
 type Props = {
   params: { id: string };
@@ -16,6 +17,7 @@ const Project = ({ params }: Props) => {
  
 
   return  <div>
+    
    
       {/* Render ProjectHeader with activeTab and setActiveTab props */}
       <ProjectHeader activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -23,6 +25,10 @@ const Project = ({ params }: Props) => {
       {/* Conditional rendering for different tabs, e.g., Board */}
       {activeTab === "Board" && (
         <Board id ={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen}/>
+        
+      )}
+      {activeTab === "List" && (
+        <List id ={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen}/>
         
       )}
     </div>
