@@ -51,11 +51,14 @@ const index = ({task}: Props) => {
     {task.startDate ? format(new Date(task.startDate), "p") : "Not set "}
     </p>
     <p>
-    <strong>Start Date :</strong> {""}
-    {task.startDate ? format(new Date(task.startDate), "p") : "Not set "}
+    <strong>Due Date :</strong> {""}
+    {task.dueDate ? format(new Date(task.dueDate), "p") : "Not set "}
     </p>
     <p>
-    <strong>ID:</strong> {task.id}
+    <strong>Author :</strong> {task.author ? task.author.username : "Unknown "}
+    </p>
+    <p>
+    <strong>Assignee :</strong> {task.assignee  ? task.assignee.username : "Unassigned"}
     </p>
     
     </div>
