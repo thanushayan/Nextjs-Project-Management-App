@@ -6,6 +6,7 @@ import Board from "../BoardView/index"
 import List from "../ListView/index"
 import Timeline from "../TimelineView"
 import Table from "../TableView";
+import ModalNewTask from "@/components/ModalNewTask";
 
 type Props = {
   params: { id: string };
@@ -19,9 +20,12 @@ const Project = ({ params }: Props) => {
  
 
   return  <div>
-    
+    <ModalNewTask
+      isOpen={isModalNewTaskOpen}
+      onClose={() => setIsModalNewTaskOpen(false)}
+      />
    
-      {/* Render ProjectHeader with activeTab and setActiveTab props */}
+ 
       <ProjectHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Conditional rendering for different tabs, e.g., Board */}
