@@ -24,7 +24,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-// import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
+ import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 
 const taskColumns: GridColDef[] = [
   { field: "title", headerName: "Title", width: 200 },
@@ -149,8 +149,8 @@ const HomePage = () => {
               loading={tasksLoading}
               getRowClassName={() => "data-grid-row"}
               getCellClassName={() => "data-grid-cell"}
-            //   className={dataGridClassNames}
-            //   sx={dataGridSxStyles(isDarkMode)}
+              className={dataGridClassNames}
+            sx={dataGridSxStyles(isDarkMode)}
             />
           </div>
         </div>
