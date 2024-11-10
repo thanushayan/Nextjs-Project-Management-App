@@ -20,9 +20,10 @@ const Project = ({ params }: Props) => {
  
 
   return  <div>
-    <ModalNewTask
-      isOpen={isModalNewTaskOpen}
-      onClose={() => setIsModalNewTaskOpen(false)}
+     <ModalNewTask
+        isOpen={isModalNewTaskOpen}
+        onClose={() => setIsModalNewTaskOpen(false)}
+        id={id}
       />
    
  
