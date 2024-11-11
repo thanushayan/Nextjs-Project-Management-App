@@ -35,8 +35,8 @@ app.use("/users", userRoutes);
 app.use("/teams", teamRoutes);
 
 // server
-const port = process.env.PORT || 3000;
-app.listen(port,()=>{
+const port = Number(process.env.PORT) || 3000;   //ec2 networking issues 
+app.listen(port,"0.0.0.0",()=>{                           ////ec2 networking issues 
     console.log(`Server running on port ${port}`)
 })
 
